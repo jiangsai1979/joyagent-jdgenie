@@ -69,9 +69,25 @@ const ChatView: GenieType.FC<Props> = (props) => {
       deepThink: deepThink ? 1 : 0,
       outputStyle
     };
+
+    // 添加详细调试日志
+    console.log('🚀 [DEBUG] 开始发送消息');
+    console.log('🚀 [DEBUG] 会话ID:', sessionId);
+    console.log('🚀 [DEBUG] 请求ID:', requestId);
+    console.log('🚀 [DEBUG] 用户查询:', message);
+    console.log('🚀 [DEBUG] 深度思考:', deepThink);
+    console.log('🚀 [DEBUG] 输出样式:', outputStyle);
+    console.log('🚀 [DEBUG] 完整参数:', JSON.stringify(params, null, 2));
     const handleMessage = (data: MESSAGE.Answer) => {
+      console.log('📥 [DEBUG] 处理收到的消息:', JSON.stringify(data, null, 2));
       const { finished, resultMap, packageType, status } = data;
+      
+      console.log('📥 [DEBUG] 消息状态:', status);
+      console.log('📥 [DEBUG] 包类型:', packageType);
+      console.log('📥 [DEBUG] 是否完成:', finished);
+      
       if (status === "tokenUseUp") {
+        console.log('⚠️ [DEBUG] Token 用尽，显示提示框');
         modal.info({
           title: '您的试用次数已用尽',
           content: '如需额外申请，请联系 liyang.1236@jd.com',
@@ -119,11 +135,18 @@ const ChatView: GenieType.FC<Props> = (props) => {
     };
 
     const handleError = (error: unknown) => {
+      console.error('💥 [ERROR] 处理错误:', error);
+      console.error('💥 [ERROR] 错误类型:', typeof error);
+      console.error('💥 [ERROR] 错误字符串:', String(error));
+      setLoading(false);
+      currentChat.loading = false;
+      currentChat.tip = "任务执行失败，请联系管理员！";
       throw error;
     };
 
     const handleClose = () => {
-      console.log('🚀 ~ close');
+      console.log('🔚 [DEBUG] SSE 连接关闭');
+      setLoading(false);
     };
 
     querySSE({

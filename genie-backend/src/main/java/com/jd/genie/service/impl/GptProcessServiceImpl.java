@@ -19,14 +19,36 @@ public class GptProcessServiceImpl implements IGptProcessService {
 
     @Override
     public SseEmitter queryMultiAgentIncrStream(GptQueryReq req) {
+        log.info("🔵 [DEBUG] 进入 queryMultiAgentIncrStream 方法");
+        log.info("🔵 [DEBUG] 原始请求对象: {}", req);
+        
         long timeoutMillis = TimeUnit.HOURS.toMillis(1);
+        log.info("🔵 [DEBUG] 设置超时时间: {} 毫秒", timeoutMillis);
+        
         req.setUser("genie");
+        log.info("🔵 [DEBUG] 设置用户为: genie");
+        
         req.setDeepThink(req.getDeepThink() == null ? 0: req.getDeepThink());
+        log.info("🔵 [DEBUG] 深度思考标志处理后: {}", req.getDeepThink());
+        
         String traceId = ChateiUtils.getRequestId(req);
+        log.info("🔵 [DEBUG] 生成 traceId: {}", traceId);
+        
         req.setTraceId(traceId);
-        final SseEmitter emitter = SseUtil.build(timeoutMillis, req.getTraceId());
-        multiAgentService.searchForAgentRequest(req, emitter);
-        log.info("queryMultiAgentIncrStream GptQueryReq request:{}", req);
-        return emitter;
+        log.info("🔵 [DEBUG] 完整的请求对象: {}", req);
+        
+        try {
+            final SseEmitter emitter = SseUtil.build(timeoutMillis, req.getTraceId());
+            log.info("🟢 [DEBUG] SSE 发射器构建成功");
+            
+            log.info("🔵 [DEBUG] 开始调用 multiAgentService.searchForAgentRequest");
+            multiAgentService.searchForAgentRequest(req, emitter);
+            log.info("🟢 [DEBUG] multiAgentService.searchForAgentRequest 调用完成");
+            
+            return emitter;
+        } catch (Exception e) {
+            log.error("🔴 [ERROR] queryMultiAgentIncrStream 处理失败", e);
+            throw e;
+        }
     }
 }

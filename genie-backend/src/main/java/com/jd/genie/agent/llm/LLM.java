@@ -566,10 +566,15 @@ public class LLM {
                     .build();
 
             String apiEndpoint = baseUrl + interfaceUrl;
+            
+            String requestBodyJson = objectMapper.writeValueAsString(params);
+            log.info("API Request URL: {}", apiEndpoint);
+            log.info("API Request Body: {}", requestBodyJson);
+            log.info("API Request Headers: Authorization=Bearer {}", apiKey.substring(0, 10) + "...");
 
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"),
-                    objectMapper.writeValueAsString(params)
+                    requestBodyJson
             );
 
             Request.Builder requestBuilder = new Request.Builder()
@@ -591,8 +596,10 @@ public class LLM {
                 public void onResponse(Call call, Response response) throws IOException {
                     try (ResponseBody responseBody = response.body()) {
                         if (!response.isSuccessful()) {
+                            String errorBody = responseBody != null ? responseBody.string() : "No error body";
+                            log.error("API call failed - Status: {}, Error body: {}", response.code(), errorBody);
                             future.completeExceptionally(
-                                    new IOException("Unexpected response code: " + response)
+                                    new IOException("Unexpected response code: " + response + ", Error: " + errorBody)
                             );
                         } else {
                             future.complete(responseBody.string());
@@ -1005,10 +1012,15 @@ public class LLM {
                     .build();
 
             String apiEndpoint = baseUrl + interfaceUrl;
+            
+            String requestBodyJson = objectMapper.writeValueAsString(params);
+            log.info("API Request URL: {}", apiEndpoint);
+            log.info("API Request Body: {}", requestBodyJson);
+            log.info("API Request Headers: Authorization=Bearer {}", apiKey.substring(0, 10) + "...");
 
             RequestBody body = RequestBody.create(
                     MediaType.parse("application/json"),
-                    objectMapper.writeValueAsString(params)
+                    requestBodyJson
             );
 
             Request.Builder requestBuilder = new Request.Builder()

@@ -25,29 +25,48 @@ interface SSEConfig {
 export default (config: SSEConfig, url: string = DEFAULT_SSE_URL): void => {
   const { body = null, handleMessage, handleError, handleClose } = config;
 
+  // 添加详细调试日志
+  console.log('🔵 [DEBUG] SSE 连接开始');
+  console.log('🔵 [DEBUG] SSE URL:', url);
+  console.log('🔵 [DEBUG] SSE 请求体:', JSON.stringify(body, null, 2));
+  console.log('🔵 [DEBUG] SSE 请求头:', SSE_HEADERS);
+
   fetchEventSource(url, {
     method: 'POST',
     credentials: 'include',
     headers: SSE_HEADERS,
     body: JSON.stringify(body),
     openWhenHidden: true,
+    onopen(response) {
+      console.log('🟢 [DEBUG] SSE 连接已打开');
+      console.log('🟢 [DEBUG] 响应状态:', response.status);
+      console.log('🟢 [DEBUG] 响应头:', response.headers);
+    },
     onmessage(event: EventSourceMessage) {
+      console.log('📨 [DEBUG] 收到 SSE 消息:', event);
       if (event.data) {
         try {
           const parsedData = JSON.parse(event.data);
+          console.log('📨 [DEBUG] 解析后的数据:', JSON.stringify(parsedData, null, 2));
           handleMessage(parsedData);
         } catch (error) {
-          console.error('Error parsing SSE message:', error);
+          console.error('🔴 [ERROR] SSE 消息解析失败:', error);
+          console.error('🔴 [ERROR] 原始数据:', event.data);
           handleError(new Error('Failed to parse SSE message'));
         }
       }
     },
     onerror(error: Error) {
-      console.error('SSE error:', error);
+      console.error('🔴 [ERROR] SSE 连接错误:', error);
+      console.error('🔴 [ERROR] 错误详情:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
       handleError(error);
     },
     onclose() {
-      console.log('SSE connection closed');
+      console.log('🟡 [DEBUG] SSE 连接已关闭');
       handleClose();
     }
   });

@@ -7,4 +7,6 @@ MAIN_MODULE="com.jd.genie.GenieApplication"
 LOGFILE="./genie-backend_startup.log"
 
 echo "starting $APP_NAME :)"
-java -classpath "$CLASSPATH" -Dbasedir="$BASEDIR" -Dfile.encoding="UTF-8" ${MAIN_MODULE} > $LOGFILE 2>&1 &
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+"$JAVA_HOME/bin/java" -classpath "$CLASSPATH" -Dbasedir="$BASEDIR" -Dfile.encoding="UTF-8" \
+     ${MAIN_MODULE} > $LOGFILE 2>&1 &

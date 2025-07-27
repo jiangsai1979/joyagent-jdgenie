@@ -265,7 +265,22 @@ public class GenieController {
      */
     @RequestMapping(value = "/web/api/v1/gpt/queryAgentStreamIncr", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter queryAgentStreamIncr(@RequestBody GptQueryReq params) {
-        return gptProcessService.queryMultiAgentIncrStream(params);
+        log.info("🔵 [DEBUG] 收到查询请求 - queryAgentStreamIncr");
+        log.info("🔵 [DEBUG] 请求参数: {}", JSON.toJSONString(params));
+        log.info("🔵 [DEBUG] 会话ID: {}", params.getSessionId());
+        log.info("🔵 [DEBUG] 请求ID: {}", params.getRequestId());
+        log.info("🔵 [DEBUG] 查询内容: {}", params.getQuery());
+        log.info("🔵 [DEBUG] 深度思考标志: {}", params.getDeepThink());
+        log.info("🔵 [DEBUG] 输出样式: {}", params.getOutputStyle());
+        
+        try {
+            SseEmitter emitter = gptProcessService.queryMultiAgentIncrStream(params);
+            log.info("🟢 [DEBUG] SSE 发射器创建成功");
+            return emitter;
+        } catch (Exception e) {
+            log.error("🔴 [ERROR] 处理查询请求失败", e);
+            throw e;
+        }
     }
 
 }

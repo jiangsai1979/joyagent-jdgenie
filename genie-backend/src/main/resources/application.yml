@@ -8,20 +8,21 @@ server:
 logging:
   level:
     root: INFO
+    com.jd.genie: DEBUG
 llm:
   default:
-    base_url: '<input llm server here>'
-    apikey: '<input llm key here>'
-    interface_url: '/chat/completions'
-    model: gpt-4.1
-    max_tokens: 16384
+    base_url: 'https://api.siliconflow.cn'
+    apikey: 'sk-mqsczuniadzjaeijuknkqzhbdudnbrkcbijqtwxokkahrhhb'
+    interface_url: '/v1/chat/completions'
+    model: Qwen/Qwen2.5-Coder-32B-Instruct
+    max_tokens: 4096
   settings: '{"claude-3-7-sonnet-v1": {
-        "model": "claude-3-7-sonnet-v1",
-        "max_tokens": 8192,
+        "model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "max_tokens": 4096,
         "temperature": 0,
-        "base_url": "<input llm server here>",
-        "apikey": "<input llm key here>",
-        "interface_url": "/chat/completions",
+        "base_url": "https://api.siliconflow.cn",
+        "apikey": "sk-mqsczuniadzjaeijuknkqzhbdudnbrkcbijqtwxokkahrhhb",
+        "interface_url": "/v1/chat/completions",
         "max_input_tokens": 128000
     }}'
 
@@ -98,8 +99,8 @@ autobots:
     tool_list: '{}'
     code_interpreter_url: "http://127.0.0.1:1601"
     deep_search_url: "http://127.0.0.1:1601"
-    mcp_client_url: "http://127.0.0.1:8188"
-    mcp_server_url: "https://mcp.api-inference.modelscope.net/1784ac5c6d0044/sse"
+    mcp_client_url: ""
+    mcp_server_url: ""
     summary:
       system_prompt: "# 角色
 你是一个超级智能体，你只能根据提供的信息，对用户的问题<query>进行回应，如果没有找到答案，但是有文件时，则提示让用户查看相应的文件。

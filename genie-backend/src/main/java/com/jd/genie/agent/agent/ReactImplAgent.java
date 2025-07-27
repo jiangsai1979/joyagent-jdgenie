@@ -52,12 +52,12 @@ public class ReactImplAgent extends ReActAgent {
                 .replace("{{tools}}", toolPrompt.toString())
                 .replace("{{query}}", context.getQuery())
                 .replace("{{date}}", context.getDateInfo())
-                .replace("{{basePrompt}}", context.getBasePrompt()));
+                .replace("{{basePrompt}}", context.getBasePrompt() != null ? context.getBasePrompt() : ""));
         setNextStepPrompt(genieConfig.getReactNextStepPromptMap().getOrDefault(nextPromptKey, ToolCallPrompt.NEXT_STEP_PROMPT)
                 .replace("{{tools}}", toolPrompt.toString())
                 .replace("{{query}}", context.getQuery())
                 .replace("{{date}}", context.getDateInfo())
-                .replace("{{basePrompt}}", context.getBasePrompt()));
+                .replace("{{basePrompt}}", context.getBasePrompt() != null ? context.getBasePrompt() : ""));
 
         setSystemPromptSnapshot(getSystemPrompt());
         setNextStepPromptSnapshot(getNextStepPrompt());
